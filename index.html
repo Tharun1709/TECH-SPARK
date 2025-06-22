@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="We build Embedded Systems and IoT Projects at affordable cost for students and hobbyists."/>
+  <title>Embedded Systems & IoT Project Services</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    .poster-bg {
+      background-color: #1a202c;
+      background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+    }
+    .text-shadow {
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    }
+    .spinner {
+      border-top-color: #3498db;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+  <div class="poster-bg relative w-full max-w-2xl lg:max-w-3xl shadow-2xl rounded-2xl overflow-hidden border-4 border-blue-500/50">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+
+    <div class="relative z-10 flex flex-col h-full p-6 md:p-10 text-white">
+      <header class="text-center">
+        <h1 class="text-4xl md:text-6xl font-black uppercase tracking-wider text-shadow text-blue-400">Tech Spark</h1>
+        <p class="text-lg md:text-xl font-semibold text-gray-200 text-shadow">Your Idea, Our Expertise, Real Results</p>
+      </header>
+
+      <main class="flex-grow flex flex-col justify-center my-6">
+        <div class="text-center mb-6">
+          <h2 class="text-2xl md:text-4xl font-bold text-shadow">Bring Your Embedded & IoT Projects to Life!</h2>
+          <p class="text-base md:text-lg mt-2 text-gray-300 max-w-xl mx-auto text-shadow">Complete solutions for academic projects, competitions, and events.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+          <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700 backdrop-blur-lg hover:scale-105 transition-transform">
+            <h3 class="font-bold text-lg text-white">Working Models</h3>
+            <p class="text-sm text-gray-400">Functional prototypes for any project scale.</p>
+          </div>
+          <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700 backdrop-blur-lg hover:scale-105 transition-transform">
+            <h3 class="font-bold text-lg text-white">Circuit Diagrams</h3>
+            <p class="text-sm text-gray-400">Clear and accurate schematics.</p>
+          </div>
+          <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700 backdrop-blur-lg hover:scale-105 transition-transform">
+            <h3 class="font-bold text-lg text-white">Complete Reports</h3>
+            <p class="text-sm text-gray-400">Detailed documentation to support your work.</p>
+          </div>
+        </div>
+
+        <div id="ai-feature" class="mt-8 bg-gray-900/60 p-5 rounded-xl border border-blue-500/50 backdrop-blur-lg text-center">
+          <h3 class="text-xl font-bold text-white mb-3">Don't have any ideas? No worries — we'll suggest exciting new concepts!</h3>
+          <p class="text-blue-200 mb-4">Enter a keyword (e.g., smart garden, security) to get AI-powered ideas.</p>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input id="idea-input" type="text" placeholder="Try: Smart Home, Health Monitor..." class="flex-grow bg-gray-700 text-white placeholder-gray-400 rounded-lg px-4 py-2 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"/>
+            <button id="generate-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center">
+              <span id="btn-text">✨ Generate Project Ideas</span>
+              <div id="loader" class="spinner w-5 h-5 rounded-full border-2 border-t-blue-500 border-gray-200 hidden"></div>
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <footer class="mt-auto">
+        <div class="bg-blue-500 text-gray-900 text-center py-4 px-6 rounded-xl shadow-lg">
+          <h3 class="font-bold text-lg md:text-2xl">Ready to Build? Get in Touch!</h3>
+          <p class="font-semibold text-lg mt-2">Tharun P A - Lead</p>
+          <p class="font-semibold text-xl md:text-3xl mt-1 tracking-wider">+91 98869 15153</p>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div id="results-modal" class="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center p-4 hidden z-50">
+    <div class="bg-gray-800 border border-blue-500 rounded-2xl shadow-2xl max-w-2xl w-full text-white transform transition-all opacity-0 scale-95">
+      <div class="flex justify-between items-center p-4 border-b border-gray-700">
+        <h3 class="text-xl font-bold text-blue-400">Here are some ideas!</h3>
+        <button id="close-modal-btn" class="text-gray-400 hover:text-white">&times;</button>
+      </div>
+      <div id="results-content" class="p-6 max-h-[60vh] overflow-y-auto"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    const generateBtn = document.getElementById('generate-btn');
+    const ideaInput = document.getElementById('idea-input');
+    const loader = document.getElementById('loader');
+    const btnText = document.getElementById('btn-text');
+    const modal = document.getElementById('results-modal');
+    const modalContent = document.getElementById('results-content');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+
+    generateBtn.addEventListener('click', handleGeneration);
+    closeModalBtn.addEventListener('click', hideModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) hideModal(); });
+    ideaInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') handleGeneration(); });
+
+    async function handleGeneration() {
+      const topic = ideaInput.value.trim();
+      if (!topic) {
+        showError("Please enter a keyword for your project idea.");
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const prompt = `You are an expert in embedded systems and IoT. Your task is to generate three innovative yet achievable project ideas for a student based on the following keyword: "${topic}". For each idea, provide a catchy title and a concise one-sentence description of what it does.`;
+
+        const schema = {
+          type: "ARRAY",
+          items: {
+            type: "OBJECT",
+            properties: {
+              title: { type: "STRING" },
+              description: { type: "STRING" }
+            },
+            required: ["title", "description"]
+          }
+        };
+
+        const ideas = await callGeminiAPI(prompt, schema);
+        displayResults(ideas);
+
+      } catch (error) {
+        console.error("Gemini API Error:", error);
+        showError("Sorry, we couldn't generate ideas right now. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function callGeminiAPI(prompt, schema) {
+      const apiKey = "YOUR_GEMINI_API_KEY_HERE"; // <-- Replace with your key
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+      const payload = {
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: schema,
+        },
+      };
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) throw new Error(`API call failed with status: ${response.status}`);
+
+      const result = await response.json();
+      return JSON.parse(result.candidates[0]?.content?.parts[0]?.text || "[]");
+    }
+
+    function displayResults(ideas) {
+      modalContent.innerHTML = '';
+      if (!ideas.length) {
+        modalContent.innerHTML = '<p class="text-gray-400">No ideas were generated for that topic. Try a different keyword!</p>';
+      } else {
+        const list = document.createElement('ul');
+        list.className = 'space-y-4';
+        ideas.forEach(idea => {
+          const li = document.createElement('li');
+          li.className = 'bg-gray-700/50 p-4 rounded-lg border border-gray-600';
+          li.innerHTML = `<h4 class="font-bold text-lg text-blue-300">${idea.title}</h4><p class="text-gray-300 mt-1">${idea.description}</p>`;
+          list.appendChild(li);
+        });
+        modalContent.appendChild(list);
+      }
+      showModal();
+    }
+
+    function showError(message) {
+      modalContent.innerHTML = `<p class="text-red-400 text-center">${message}</p>`;
+      showModal();
+    }
+
+    function setLoading(isLoading) {
+      loader.classList.toggle('hidden', !isLoading);
+      btnText.classList.toggle('hidden', isLoading);
+      generateBtn.disabled = isLoading;
+    }
+
+    function showModal() {
+      modal.classList.remove('hidden');
+      setTimeout(() => modal.querySelector('div').classList.remove('opacity-0', 'scale-95'), 10);
+    }
+
+    function hideModal() {
+      modal.querySelector('div').classList.add('opacity-0', 'scale-95');
+      setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+  </script>
+</body>
+</html>
